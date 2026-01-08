@@ -20,7 +20,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="zh-TW" suppressHydrationWarning>
       <body>
-        <InitColorSchemeScript attribute="class" defaultMode="system" />
+        <InitColorSchemeScript attribute="class" defaultMode="dark" />
         <SessionProvider>
           <QueryProvider>
             <AppRouterCacheProvider options={{ enableCssLayer: true }}>

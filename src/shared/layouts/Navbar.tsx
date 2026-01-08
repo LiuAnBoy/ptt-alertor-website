@@ -3,11 +3,12 @@
 import {
   AppBar,
   Button,
-  Link,
+  Link as MuiLink,
   Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
+import NextLink from "next/link";
 import { signOut, useSession } from "next-auth/react";
 
 const Navbar = () => {
@@ -27,14 +28,23 @@ const Navbar = () => {
           alignItems="center"
           justifyContent="space-between"
         >
-          <Link href="/" color="inherit">
+          <MuiLink
+            component={NextLink}
+            href="/"
+            color="inherit"
+            underline="none"
+          >
             <Typography variant="h5">PTT Alertor</Typography>
-          </Link>
+          </MuiLink>
           <Stack direction="row" alignItems="center" gap={4}>
-            <Button variant="text" color="inherit" sx={{ fontSize: "15px" }}>
-              <Link href="/top" color="inherit">
-                TOP 100
-              </Link>
+            <Button
+              component={NextLink}
+              href="/top"
+              variant="text"
+              color="inherit"
+              sx={{ fontSize: "15px" }}
+            >
+              TOP 100
             </Button>
 
             {isAuthenticated ? (
@@ -43,13 +53,13 @@ const Navbar = () => {
                   {session.user.name}
                 </Typography>
                 <Button
+                  component={NextLink}
+                  href="/settings"
                   variant="text"
                   color="inherit"
                   sx={{ fontSize: "15px" }}
                 >
-                  <Link href="/settings" color="inherit">
-                    設定
-                  </Link>
+                  設定
                 </Button>
                 <Button
                   variant="text"
@@ -61,10 +71,13 @@ const Navbar = () => {
                 </Button>
               </Stack>
             ) : (
-              <Button variant="text" color="inherit">
-                <Link href="/user/login" color="inherit">
-                  登入
-                </Link>
+              <Button
+                component={NextLink}
+                href="/user/login"
+                variant="text"
+                color="inherit"
+              >
+                登入
               </Button>
             )}
           </Stack>

@@ -5,8 +5,10 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import * as React from "react";
 
 import NotistackProvider from "@/providers/NotistackProvider";
+import QueryProvider from "@/providers/QueryProvider";
 import SessionProvider from "@/providers/SessionProvider";
-import theme from "@/theme";
+import Navbar from "@/shared/layouts/Navbar";
+import theme from "@/styles/theme";
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
@@ -14,12 +16,17 @@ export default function RootLayout(props: { children: React.ReactNode }) {
       <body>
         <InitColorSchemeScript attribute="class" defaultMode="system" />
         <SessionProvider>
-          <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <NotistackProvider>{props.children}</NotistackProvider>
-            </ThemeProvider>
-          </AppRouterCacheProvider>
+          <QueryProvider>
+            <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <NotistackProvider>
+                  <Navbar />
+                  {props.children}
+                </NotistackProvider>
+              </ThemeProvider>
+            </AppRouterCacheProvider>
+          </QueryProvider>
         </SessionProvider>
       </body>
     </html>

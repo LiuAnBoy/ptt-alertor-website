@@ -6,36 +6,53 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        account: { label: 'Account', type: 'text' },
+        email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.account || !credentials?.password) {
+        if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
         try {
           const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9090';
-          const res = await fetch(`${apiUrl}/api/auth/login`, {
+
+          // Login to get token
+          const loginRes = await fetch(`${apiUrl}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              account: credentials.account,
+              email: credentials.email,
               password: credentials.password,
             }),
           });
 
-          if (!res.ok) {
+          if (!loginRes.ok) {
             return null;
           }
 
-          const data = await res.json();
+          const loginData = await loginRes.json();
+          const token = loginData.token;
+
+          // Get user info with token
+          const meRes = await fetch(`${apiUrl}/api/auth/me`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!meRes.ok) {
+            return null;
+          }
+
+          const userData = await meRes.json();
 
           return {
-            id: data.user?.id || credentials.account,
-            name: data.user?.account || credentials.account,
-            email: data.user?.email,
-            accessToken: data.token,
+            id: String(userData.id),
+            name: userData.email,
+            email: userData.email,
+            role: userData.role,
+            accessToken: token,
           };
         } catch (error) {
           console.error('Auth error:', error);
@@ -49,17 +66,19 @@ export const authOptions: AuthOptions = {
       if (user) {
         token.accessToken = user.accessToken;
         token.id = user.id;
+        token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken as string;
       session.user.id = token.id as string;
+      session.user.role = token.role as string;
       return session;
     },
   },
   pages: {
-    signIn: '/login',
+    signIn: '/user/login',
   },
   session: {
     strategy: 'jwt',

@@ -7,13 +7,14 @@ PTT 文章訂閱通知服務前端 Dashboard，使用 Next.js 開發。
 - 用戶註冊/登入
 - 訂閱管理 (關鍵字、作者、推文數)
 - Telegram 帳號綁定
+- 熱門訂閱排行榜
 - 管理員後台
 
 ## 技術架構
 
 - **Next.js 16** - React 框架
 - **TypeScript** - 型別安全
-- **Tailwind CSS** - 樣式
+- **Material UI** - UI 元件庫
 - **React Query** - 資料請求快取
 - **NextAuth.js** - 認證
 
@@ -78,17 +79,21 @@ TELEGRAM_BOT_USERNAME=your_bot_username
 ```
 dashboard/
 ├── src/
-│   ├── app/              # Next.js App Router
-│   │   ├── (auth)/       # 認證相關頁面
-│   │   ├── (dashboard)/  # Dashboard 頁面
-│   │   ├── admin/        # 管理員頁面
-│   │   ├── telegram/     # Telegram 綁定頁面
-│   │   └── api/          # API Routes
-│   ├── components/       # React 元件
-│   ├── hooks/            # Custom Hooks
-│   ├── lib/              # 工具函式
-│   └── types/            # TypeScript 型別
-├── public/               # 靜態資源
+│   ├── app/                  # Next.js App Router
+│   │   ├── user/             # 用戶認證頁面 (login, register)
+│   │   ├── settings/         # 設定頁面
+│   │   ├── top/              # 熱門訂閱排行
+│   │   └── api/              # API Routes
+│   ├── providers/            # React Context Providers
+│   ├── services/             # API 服務與 React Query Hooks
+│   ├── shared/               # 共用元件
+│   │   ├── components/       # UI 元件
+│   │   ├── forms/            # 表單元件
+│   │   └── layouts/          # 版面配置
+│   ├── stores/               # Zustand 狀態管理
+│   ├── styles/               # 主題樣式
+│   └── types/                # TypeScript 型別
+├── public/                   # 靜態資源
 └── ...
 ```
 
@@ -96,13 +101,11 @@ dashboard/
 
 | 路徑 | 說明 |
 |------|------|
-| `/` | 首頁 |
-| `/login` | 登入 |
-| `/register` | 註冊 |
-| `/subscriptions` | 訂閱管理 |
-| `/settings` | 設定 (綁定管理) |
-| `/telegram/bind` | Telegram 綁定確認頁 |
-| `/admin` | 管理員後台 |
+| `/` | 首頁 (使用說明) |
+| `/user/login` | 登入 |
+| `/user/register` | 註冊 |
+| `/settings` | 設定 (訂閱管理、綁定管理) |
+| `/top` | 熱門訂閱排行 |
 
 ## 部署到 Vercel
 

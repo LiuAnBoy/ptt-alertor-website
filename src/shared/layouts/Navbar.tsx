@@ -61,7 +61,7 @@ const Navbar = () => {
                   variant="text"
                   color="inherit"
                   sx={{ fontSize: "15px" }}
-                  onClick={() => signOut()}
+                  onClick={() => signOut({ callbackUrl: "/" })}
                 >
                   登出
                 </Button>

@@ -15,7 +15,7 @@ export default function RegisterPage() {
     <Container maxWidth="sm">
       <Box
         sx={{
-          minHeight: "100vh",
+          minHeight: "calc(100vh - 64px)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",

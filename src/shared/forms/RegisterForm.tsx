@@ -5,11 +5,11 @@ import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 
-import Link from "next/link";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function RegisterForm() {
@@ -121,14 +121,19 @@ export default function RegisterForm() {
         <Button
           type="submit"
           fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
+          variant="outlined"
+          sx={{ mt: 3, mb: 2, color: "white", borderColor: "white" }}
           disabled={isLoading}
         >
           {isLoading ? <CircularProgress size={24} /> : "註冊"}
         </Button>
         <Box sx={{ textAlign: "center" }}>
-          <Link href="/user/login">已有帳號？立即登入</Link>
+          <Link
+            href="/user/login"
+            style={{ color: "white", textDecoration: "none" }}
+          >
+            已有帳號？立即登入
+          </Link>
         </Box>
       </Box>
     </>

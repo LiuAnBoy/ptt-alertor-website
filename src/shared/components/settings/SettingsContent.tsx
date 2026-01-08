@@ -2,7 +2,15 @@
 
 import AddIcon from "@mui/icons-material/Add";
 import TelegramIcon from "@mui/icons-material/Telegram";
-import { Box, Button, Collapse, Container, Tab, Tabs } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Collapse,
+  Container,
+  Tab,
+  Tabs,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { ReactNode, SyntheticEvent, useEffect, useState } from "react";
@@ -134,8 +142,10 @@ const SettingsContent = () => {
 
   const userRole = user?.role ?? "user";
   const maxSubscriptions = SUBSCRIPTION_LIMITS[userRole] ?? DEFAULT_LIMIT;
+  const hasAnyBinding = user?.bindings?.telegram ?? false;
   const canAddMore =
-    maxSubscriptions === -1 || subscriptions.length < maxSubscriptions;
+    hasAnyBinding &&
+    (maxSubscriptions === -1 || subscriptions.length < maxSubscriptions);
 
   // Show nothing while checking auth status or redirecting
   if (status === "loading" || status === "unauthenticated") {
@@ -153,6 +163,10 @@ const SettingsContent = () => {
 
       <TabPanel value={tabIndex} index={0}>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {!hasAnyBinding && (
+            <Alert severity="warning">請先綁定任一通訊軟體才能新增訂閱</Alert>
+          )}
+
           {subscriptions.map((subscription, index) => (
             <SubscriptionCard
               key={subscription.id}
@@ -181,11 +195,13 @@ const SettingsContent = () => {
             variant="outlined"
             startIcon={<AddIcon />}
             onClick={handleAddNew}
-            disabled={!canAddMore}
+            disabled={!canAddMore || isAddingNew}
             sx={{ alignSelf: "flex-start" }}
           >
             新增訂閱
-            {maxSubscriptions !== -1 &&
+            {!hasAnyBinding && " (請先綁定通訊軟體)"}
+            {hasAnyBinding &&
+              maxSubscriptions !== -1 &&
               subscriptions.length >= maxSubscriptions &&
               ` (已達上限 ${maxSubscriptions} 組)`}
           </Button>

@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 
-import Link from "@/components/Link";
+import Link from "next/link";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function RegisterForm() {

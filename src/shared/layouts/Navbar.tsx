@@ -13,10 +13,6 @@ import { signOut, useSession } from "next-auth/react";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
-  if (!session) {
-    return null;
-  }
-
   const isAuthenticated = status === "authenticated";
 
   return (
@@ -50,7 +46,7 @@ const Navbar = () => {
             {isAuthenticated ? (
               <Stack direction="row" alignItems="center">
                 <Typography variant="body1" sx={{ pr: 2 }}>
-                  {session.user.name}
+                  {session?.user?.name}
                 </Typography>
                 <Button
                   component={NextLink}

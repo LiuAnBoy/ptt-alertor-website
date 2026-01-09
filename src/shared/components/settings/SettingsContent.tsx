@@ -6,6 +6,7 @@ import {
   Alert,
   Box,
   Button,
+  CircularProgress,
   Collapse,
   Container,
   Tab,
@@ -79,11 +80,13 @@ const SettingsContent = () => {
     }
   }, [status, router]);
 
-  const { data: user } = useUserQuery(isAuthenticated);
+  const { data: user, isLoading: isUserLoading } =
+    useUserQuery(isAuthenticated);
   const { mutate: bind, isPending: isBinding } = useBindMutation();
   const { mutate: unbind, isPending: isUnbinding } = useUnbindMutation();
 
-  const { data: subscriptions = [] } = useSubscriptionQuery(isAuthenticated);
+  const { data: subscriptions = [], isLoading: isSubscriptionsLoading } =
+    useSubscriptionQuery(isAuthenticated);
   const { mutate: createSubscription, isPending: isCreating } =
     useCreateSubscriptionMutation();
   const { mutate: updateSubscription, isPending: isUpdating } =
@@ -132,8 +135,16 @@ const SettingsContent = () => {
   const handleUpdateSubscription = (
     id: number,
     data: UpdateSubscriptionRequest,
+    onSuccess?: () => void,
   ) => {
-    updateSubscription({ id, data });
+    updateSubscription(
+      { id, data },
+      {
+        onSuccess: () => {
+          onSuccess?.();
+        },
+      },
+    );
   };
 
   const handleDeleteSubscription = (id: number) => {
@@ -162,65 +173,77 @@ const SettingsContent = () => {
       </Box>
 
       <TabPanel value={tabIndex} index={0}>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {!hasAnyBinding && (
-            <Alert severity="warning">請先綁定任一通訊軟體才能新增訂閱</Alert>
-          )}
+        {isSubscriptionsLoading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+            <CircularProgress sx={{ color: "#121212" }} />
+          </Box>
+        ) : (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {!hasAnyBinding && (
+              <Alert severity="warning">請先綁定任一通訊軟體才能新增訂閱</Alert>
+            )}
 
-          {subscriptions.map((subscription, index) => (
-            <SubscriptionCard
-              key={subscription.id}
-              index={index}
-              subscription={subscription}
-              isLoading={isUpdating || isDeleting}
-              onSave={handleCreateSubscription}
-              onUpdate={handleUpdateSubscription}
-              onDelete={handleDeleteSubscription}
-            />
-          ))}
-
-          <Collapse in={isAddingNew} timeout={300}>
-            <Box sx={{ mt: subscriptions.length > 0 ? 0 : 0, mb: 2 }}>
+            {subscriptions.map((subscription, index) => (
               <SubscriptionCard
-                index={subscriptions.length}
-                isNew
-                isLoading={isCreating}
+                key={subscription.id}
+                index={index}
+                subscription={subscription}
+                isLoading={isUpdating || isDeleting}
                 onSave={handleCreateSubscription}
-                onCancel={handleCancelNew}
+                onUpdate={handleUpdateSubscription}
+                onDelete={handleDeleteSubscription}
               />
-            </Box>
-          </Collapse>
+            ))}
 
-          <Button
-            variant="outlined"
-            startIcon={<AddIcon />}
-            onClick={handleAddNew}
-            disabled={!canAddMore || isAddingNew}
-            sx={{ alignSelf: "flex-start" }}
-          >
-            新增訂閱
-            {!hasAnyBinding && " (請先綁定通訊軟體)"}
-            {hasAnyBinding &&
-              maxSubscriptions !== -1 &&
-              subscriptions.length >= maxSubscriptions &&
-              ` (已達上限 ${maxSubscriptions} 組)`}
-          </Button>
-        </Box>
+            <Collapse in={isAddingNew} timeout={300}>
+              <Box sx={{ mt: subscriptions.length > 0 ? 0 : 0, mb: 2 }}>
+                <SubscriptionCard
+                  index={subscriptions.length}
+                  isNew
+                  isLoading={isCreating}
+                  onSave={handleCreateSubscription}
+                  onCancel={handleCancelNew}
+                />
+              </Box>
+            </Collapse>
+
+            <Button
+              variant="outlined"
+              startIcon={<AddIcon />}
+              onClick={handleAddNew}
+              disabled={!canAddMore || isAddingNew}
+              sx={{ alignSelf: "flex-start" }}
+            >
+              新增訂閱
+              {!hasAnyBinding && " (請先綁定通訊軟體)"}
+              {hasAnyBinding &&
+                maxSubscriptions !== -1 &&
+                subscriptions.length >= maxSubscriptions &&
+                ` (已達上限 ${maxSubscriptions} 組)`}
+            </Button>
+          </Box>
+        )}
       </TabPanel>
 
       <TabPanel value={tabIndex} index={1}>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <BindingCard
-            serviceName="Telegram"
-            icon={<TelegramIcon sx={{ fontSize: 40, color: "#0088cc" }} />}
-            isBinding={user?.bindings?.telegram ?? false}
-            isLoading={isBinding || isUnbinding}
-            color="#0088cc"
-            hoverColor="#006699"
-            onBind={handleBind}
-            onUnbind={handleUnbind}
-          />
-        </Box>
+        {isUserLoading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+            <CircularProgress sx={{ color: "#121212" }} />
+          </Box>
+        ) : (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <BindingCard
+              serviceName="Telegram"
+              icon={<TelegramIcon sx={{ fontSize: 40, color: "#0088cc" }} />}
+              isBinding={user?.bindings?.telegram ?? false}
+              isLoading={isBinding || isUnbinding}
+              color="#0088cc"
+              hoverColor="#006699"
+              onBind={handleBind}
+              onUnbind={handleUnbind}
+            />
+          </Box>
+        )}
       </TabPanel>
 
       {/* Binding Modal */}

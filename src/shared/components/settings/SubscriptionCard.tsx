@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   CardContent,
+  CircularProgress,
   FormControl,
   IconButton,
   InputLabel,
@@ -31,7 +32,11 @@ interface SubscriptionCardProps {
   isNew?: boolean;
   isLoading?: boolean;
   onSave: (data: CreateSubscriptionRequest) => void;
-  onUpdate?: (id: number, data: UpdateSubscriptionRequest) => void;
+  onUpdate?: (
+    id: number,
+    data: UpdateSubscriptionRequest,
+    onSuccess?: () => void,
+  ) => void;
   onDelete?: (id: number) => void;
   onCancel?: () => void;
 }
@@ -65,13 +70,16 @@ const SubscriptionCard = ({
     if (isNew) {
       onSave({ board: board.trim(), sub_type: subType, value: value.trim() });
     } else if (subscription?.id && onUpdate) {
-      onUpdate(subscription.id, {
-        board: board.trim(),
-        sub_type: subType,
-        value: value.trim(),
-        enabled: subscription.enabled,
-      });
-      setIsEditing(false);
+      onUpdate(
+        subscription.id,
+        {
+          board: board.trim(),
+          sub_type: subType,
+          value: value.trim(),
+          enabled: subscription.enabled,
+        },
+        () => setIsEditing(false),
+      );
     }
   };
 
@@ -141,6 +149,7 @@ const SubscriptionCard = ({
               <Button
                 variant="outlined"
                 onClick={handleCancel}
+                disabled={isLoading}
                 sx={{ color: "white" }}
               >
                 取消
@@ -149,9 +158,15 @@ const SubscriptionCard = ({
                 variant="outlined"
                 onClick={handleSave}
                 disabled={isLoading || !board.trim() || !value.trim()}
-                sx={{ color: "white", borderColor: "white" }}
+                sx={{ color: "white", borderColor: "white", minWidth: 80 }}
               >
-                {isNew ? "建立" : "儲存"}
+                {isLoading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : isNew ? (
+                  "建立"
+                ) : (
+                  "儲存"
+                )}
               </Button>
             </Box>
           </Box>

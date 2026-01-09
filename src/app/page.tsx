@@ -8,7 +8,7 @@ export default function Home() {
     <Container maxWidth="md">
       <Box
         sx={{
-          minHeight: "calc(100vh - 64px)",
+          minHeight: "calc(100dvh - 64px)",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",

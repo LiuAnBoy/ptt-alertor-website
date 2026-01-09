@@ -39,12 +39,12 @@ export default async function TopPage() {
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Typography
         variant="h4"
-        component="h1"
-        gutterBottom
         fontWeight="bold"
-        color="#121212"
+        gutterBottom
+        sx={{ mb: 3 }}
+        color="text.secondary"
       >
-        熱門訂閱排行
+        使用教學
       </Typography>
 
       <TopTabs

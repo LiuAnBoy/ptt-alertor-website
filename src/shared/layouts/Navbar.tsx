@@ -16,7 +16,7 @@ const Navbar = () => {
   const isAuthenticated = status === "authenticated";
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Toolbar>
         <Stack
           sx={{ width: "100%" }}
@@ -41,6 +41,15 @@ const Navbar = () => {
               sx={{ fontSize: "15px" }}
             >
               TOP 100
+            </Button>
+            <Button
+              component={NextLink}
+              href="/docs"
+              variant="text"
+              color="inherit"
+              sx={{ fontSize: "15px" }}
+            >
+              教學
             </Button>
 
             {isAuthenticated ? (
@@ -72,6 +81,7 @@ const Navbar = () => {
                 href="/user/login"
                 variant="text"
                 color="inherit"
+                sx={{ fontSize: "15px" }}
               >
                 登入
               </Button>

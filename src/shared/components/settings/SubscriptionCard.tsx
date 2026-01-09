@@ -150,7 +150,7 @@ const SubscriptionCard = ({
                 variant="outlined"
                 onClick={handleCancel}
                 disabled={isLoading}
-                sx={{ color: "white" }}
+                color="secondary"
               >
                 取消
               </Button>
@@ -158,7 +158,7 @@ const SubscriptionCard = ({
                 variant="outlined"
                 onClick={handleSave}
                 disabled={isLoading || !board.trim() || !value.trim()}
-                sx={{ color: "white", borderColor: "white", minWidth: 80 }}
+                sx={{ minWidth: 80 }}
               >
                 {isLoading ? (
                   <CircularProgress size={20} color="inherit" />
@@ -182,7 +182,7 @@ const SubscriptionCard = ({
               <Typography variant="h6" fontWeight="bold">
                 {subscription?.board}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2">
                 {SUB_TYPE_LABELS[subscription?.sub_type ?? "keyword"]}：
                 {subscription?.value}
               </Typography>

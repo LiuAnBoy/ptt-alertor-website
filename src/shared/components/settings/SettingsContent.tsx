@@ -213,6 +213,7 @@ const SettingsContent = () => {
               onClick={handleAddNew}
               disabled={!canAddMore || isAddingNew}
               sx={{ alignSelf: "flex-start" }}
+              color="secondary"
             >
               新增訂閱
               {!hasAnyBinding && " (請先綁定通訊軟體)"}

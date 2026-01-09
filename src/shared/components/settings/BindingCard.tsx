@@ -41,7 +41,7 @@ const BindingCard = ({
           {icon}
           <Box>
             <Typography variant="h6">{serviceName}</Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2">
               {isBinding ? "已綁定" : "尚未綁定"}
             </Typography>
           </Box>

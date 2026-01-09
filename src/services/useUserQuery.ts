@@ -7,6 +7,7 @@ import { http } from "./http";
  */
 export interface UserBindings {
   telegram: boolean;
+  ptt?: boolean;
 }
 
 /**

@@ -1,6 +1,7 @@
 "use client";
 
 import AddIcon from "@mui/icons-material/Add";
+import ComputerIcon from "@mui/icons-material/Computer";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import {
   Alert,
@@ -19,7 +20,9 @@ import { ReactNode, SyntheticEvent, useEffect, useState } from "react";
 import {
   BindCodeResponse,
   useBindMutation,
+  useBindPTTAccountMutation,
   useUnbindMutation,
+  useUnbindPTTAccountMutation,
 } from "@/services/useBindingQuery";
 import {
   CreateSubscriptionRequest,
@@ -33,6 +36,7 @@ import { useUserQuery } from "@/services/useUserQuery";
 
 import BindingCard from "./BindingCard";
 import BindingModal from "./BindingModal";
+import PTTBindingModal from "./PTTBindingModal";
 import SubscriptionCard from "./SubscriptionCard";
 
 /**
@@ -72,6 +76,8 @@ const SettingsContent = () => {
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [bindModalOpen, setBindModalOpen] = useState(false);
   const [bindData, setBindData] = useState<BindCodeResponse | null>(null);
+  const [pttModalOpen, setPttModalOpen] = useState(false);
+  const [pttError, setPttError] = useState<string | undefined>();
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -84,6 +90,13 @@ const SettingsContent = () => {
     useUserQuery(isAuthenticated);
   const { mutate: bind, isPending: isBinding } = useBindMutation();
   const { mutate: unbind, isPending: isUnbinding } = useUnbindMutation();
+
+  // PTT Account
+  const { mutate: bindPTT, isPending: isBindingPTT } =
+    useBindPTTAccountMutation();
+  const { mutate: unbindPTT, isPending: isUnbindingPTT } =
+    useUnbindPTTAccountMutation();
+  const hasPTTBinding = user?.bindings?.ptt ?? false;
 
   const { data: subscriptions = [], isLoading: isSubscriptionsLoading } =
     useSubscriptionQuery(isAuthenticated);
@@ -114,6 +127,36 @@ const SettingsContent = () => {
 
   const handleUnbind = () => {
     unbind("telegram");
+  };
+
+  // PTT binding handlers
+  const handleOpenPttModal = () => {
+    setPttError(undefined);
+    setPttModalOpen(true);
+  };
+
+  const handleClosePttModal = () => {
+    setPttModalOpen(false);
+    setPttError(undefined);
+  };
+
+  const handleBindPTT = (username: string, password: string) => {
+    bindPTT(
+      { username, password },
+      {
+        onSuccess: () => {
+          setPttModalOpen(false);
+          setPttError(undefined);
+        },
+        onError: (error) => {
+          setPttError(error.message);
+        },
+      },
+    );
+  };
+
+  const handleUnbindPTT = () => {
+    unbindPTT();
   };
 
   const handleAddNew = () => {
@@ -189,6 +232,8 @@ const SettingsContent = () => {
                 index={index}
                 subscription={subscription}
                 isLoading={isUpdating || isDeleting}
+                userRole={userRole}
+                hasPTTAccount={hasPTTBinding}
                 onSave={handleCreateSubscription}
                 onUpdate={handleUpdateSubscription}
                 onDelete={handleDeleteSubscription}
@@ -201,6 +246,8 @@ const SettingsContent = () => {
                   index={subscriptions.length}
                   isNew
                   isLoading={isCreating}
+                  userRole={userRole}
+                  hasPTTAccount={hasPTTBinding}
                   onSave={handleCreateSubscription}
                   onCancel={handleCancelNew}
                 />
@@ -243,6 +290,17 @@ const SettingsContent = () => {
               onBind={handleBind}
               onUnbind={handleUnbind}
             />
+
+            <BindingCard
+              serviceName="PTT 帳號"
+              icon={<ComputerIcon sx={{ fontSize: 40, color: "#2e7d32" }} />}
+              isBinding={hasPTTBinding}
+              isLoading={isUserLoading || isBindingPTT || isUnbindingPTT}
+              color="#2e7d32"
+              hoverColor="#1b5e20"
+              onBind={handleOpenPttModal}
+              onUnbind={handleUnbindPTT}
+            />
           </Box>
         )}
       </TabPanel>
@@ -256,6 +314,15 @@ const SettingsContent = () => {
           bindCode={bindData.bind_code}
         />
       )}
+
+      {/* PTT Binding Modal */}
+      <PTTBindingModal
+        open={pttModalOpen}
+        isLoading={isBindingPTT}
+        error={pttError}
+        onClose={handleClosePttModal}
+        onSubmit={handleBindPTT}
+      />
     </Container>
   );
 };

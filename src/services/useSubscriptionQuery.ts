@@ -4,6 +4,14 @@ import { http } from "./http";
 
 export type SubType = "keyword" | "author" | "pushsum";
 
+/**
+ * Mail template for subscription notifications
+ */
+export interface MailTemplate {
+  subject: string;
+  content: string;
+}
+
 export interface Subscription {
   id: number;
   user_id: number;
@@ -11,6 +19,7 @@ export interface Subscription {
   sub_type: SubType;
   value: string;
   enabled: boolean;
+  mail?: MailTemplate;
   created_at: string;
   updated_at: string;
 }
@@ -26,6 +35,7 @@ export interface UpdateSubscriptionRequest {
   sub_type: SubType;
   value: string;
   enabled: boolean;
+  mail?: MailTemplate;
 }
 
 export const subscriptionQueryKey = ["subscriptions"] as const;

@@ -58,3 +58,55 @@ export const useUnbindMutation = () => {
     },
   });
 };
+
+/**
+ * Request to bind PTT account
+ */
+export interface BindPTTAccountRequest {
+  username: string;
+  password: string;
+}
+
+/**
+ * Bind PTT account
+ */
+const bindPTTAccount = async (
+  data: BindPTTAccountRequest,
+): Promise<UnbindResponse> => {
+  return http.post<UnbindResponse>("/api/ptt-account", data);
+};
+
+/**
+ * Unbind PTT account
+ */
+const unbindPTTAccount = async (): Promise<UnbindResponse> => {
+  return http.delete<UnbindResponse>("/api/ptt-account");
+};
+
+/**
+ * Hook to bind PTT account
+ */
+export const useBindPTTAccountMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: bindPTTAccount,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userQueryKey });
+    },
+  });
+};
+
+/**
+ * Hook to unbind PTT account
+ */
+export const useUnbindPTTAccountMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: unbindPTTAccount,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userQueryKey });
+    },
+  });
+};

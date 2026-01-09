@@ -4,7 +4,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
-  Avatar,
   Box,
   Button,
   Drawer,

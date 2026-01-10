@@ -44,7 +44,7 @@ export default async function TopPage() {
         sx={{ mb: 3 }}
         color="text.secondary"
       >
-        使用教學
+        TOP 100
       </Typography>
 
       <TopTabs

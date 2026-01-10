@@ -215,7 +215,7 @@ const SubscriptionCard = ({
                       variant="body2"
                       sx={{ ml: 1, color: "text.disabled" }}
                     >
-                      暫時無法使用
+                      (暫時無法使用)
                     </Typography>
                   )}
                   {canUseMail && !hasPTTAccount && (
@@ -353,7 +353,7 @@ const SubscriptionCard = ({
                     variant="body2"
                     sx={{ ml: 1, color: "text.disabled" }}
                   >
-                    暫時無法使用
+                    (暫時無法使用)
                   </Typography>
                 )}
               </Box>

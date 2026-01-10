@@ -57,7 +57,7 @@ const BindingModal = ({
             <Typography variant="subtitle2" gutterBottom>
               步驟 1：開啟機器人
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            <Typography variant="body2" sx={{ mb: 1 }}>
               請點擊下方按鈕開啟 Telegram 機器人
             </Typography>
             <Button
@@ -75,7 +75,7 @@ const BindingModal = ({
             <Typography variant="subtitle2" gutterBottom>
               步驟 2：複製並發送綁定指令
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            <Typography variant="body2" sx={{ mb: 1 }}>
               請複製以下指令，貼到 Telegram 聊天室發送
             </Typography>
             <TextField
@@ -100,7 +100,7 @@ const BindingModal = ({
             <Typography variant="subtitle2" gutterBottom>
               步驟 3：完成
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2">
               機器人回覆「綁定成功」後，關閉此視窗並重新整理頁面
             </Typography>
           </Box>

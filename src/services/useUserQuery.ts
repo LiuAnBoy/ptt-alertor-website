@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { http } from "./http";
 
@@ -23,6 +23,22 @@ export interface User {
 }
 
 /**
+ * Change password request body
+ */
+export interface ChangePasswordRequest {
+  current_password: string;
+  new_password: string;
+}
+
+/**
+ * Success response from API
+ */
+export interface SuccessResponse {
+  success: boolean;
+  message: string;
+}
+
+/**
  * Query key for user data
  */
 export const userQueryKey = ["user", "me"] as const;
@@ -35,6 +51,15 @@ const fetchCurrentUser = async (): Promise<User> => {
 };
 
 /**
+ * Change user password
+ */
+const changePassword = async (
+  data: ChangePasswordRequest,
+): Promise<SuccessResponse> => {
+  return http.put<SuccessResponse>("/api/auth/password", data);
+};
+
+/**
  * Hook to get current user information
  * @param enabled - Whether to enable the query (default: true)
  */
@@ -43,6 +68,15 @@ export const useUserQuery = (enabled = true) => {
     queryKey: userQueryKey,
     queryFn: fetchCurrentUser,
     enabled,
+  });
+};
+
+/**
+ * Hook to change user password
+ */
+export const useChangePasswordMutation = () => {
+  return useMutation({
+    mutationFn: changePassword,
   });
 };
 

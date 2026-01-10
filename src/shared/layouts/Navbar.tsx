@@ -2,6 +2,7 @@
 
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
+import SettingsIcon from "@mui/icons-material/Settings";
 import {
   AppBar,
   Box,
@@ -13,21 +14,45 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Menu,
+  MenuItem,
   Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
 import NextLink from "next/link";
+import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 
 const Navbar = () => {
-  const { data: session, status } = useSession();
+  const router = useRouter();
+  const { status } = useSession();
   const isAuthenticated = status === "authenticated";
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const menuOpen = Boolean(anchorEl);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleMenuOpen = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleChangePassword = () => {
+    handleMenuClose();
+    router.push("/user/password");
+  };
+
+  const handleLogout = () => {
+    handleMenuClose();
+    signOut({ callbackUrl: "/" });
   };
 
   const menuItems = [
@@ -36,7 +61,7 @@ const Navbar = () => {
   ];
 
   const authMenuItems = isAuthenticated
-    ? [{ label: "設定", href: "/settings" }]
+    ? [{ label: "訂閱管理", href: "/subscriptions" }]
     : [{ label: "登入", href: "/user/login" }];
 
   const drawer = (
@@ -78,28 +103,29 @@ const Navbar = () => {
           </ListItem>
         ))}
         {isAuthenticated && (
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => {
-                handleDrawerToggle();
-                signOut({ callbackUrl: "/" });
-              }}
-            >
-              <ListItemText primary="登出" />
-            </ListItemButton>
-          </ListItem>
+          <>
+            <ListItem disablePadding>
+              <ListItemButton
+                component={NextLink}
+                href="/user/password"
+                onClick={handleDrawerToggle}
+              >
+                <ListItemText primary="變更密碼" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  handleDrawerToggle();
+                  signOut({ callbackUrl: "/" });
+                }}
+              >
+                <ListItemText primary="登出" />
+              </ListItemButton>
+            </ListItem>
+          </>
         )}
       </List>
-      {isAuthenticated && (
-        <Stack
-          direction="row"
-          alignItems="center"
-          sx={{ borderTop: 1, borderColor: "divider", px: 2, py: 1 }}
-          spacing={2}
-        >
-          <Typography variant="body2">{session?.user?.name}</Typography>
-        </Stack>
-      )}
     </Box>
   );
 
@@ -149,26 +175,36 @@ const Navbar = () => {
 
             {isAuthenticated ? (
               <Stack direction="row" alignItems="center">
-                <Typography variant="body1" sx={{ pr: 2 }}>
-                  {session?.user?.name}
-                </Typography>
                 <Button
                   component={NextLink}
-                  href="/settings"
+                  href="/subscriptions"
                   variant="text"
                   color="inherit"
                   sx={{ fontSize: "15px" }}
                 >
-                  設定
+                  訂閱管理
                 </Button>
-                <Button
-                  variant="text"
+                <IconButton
                   color="inherit"
-                  sx={{ fontSize: "15px" }}
-                  onClick={() => signOut({ callbackUrl: "/" })}
+                  onClick={handleMenuOpen}
+                  aria-controls={menuOpen ? "settings-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={menuOpen ? "true" : undefined}
                 >
-                  登出
-                </Button>
+                  <SettingsIcon />
+                </IconButton>
+                <Menu
+                  id="settings-menu"
+                  anchorEl={anchorEl}
+                  open={menuOpen}
+                  onClose={handleMenuClose}
+                  MenuListProps={{
+                    "aria-labelledby": "settings-button",
+                  }}
+                >
+                  <MenuItem onClick={handleChangePassword}>變更密碼</MenuItem>
+                  <MenuItem onClick={handleLogout}>登出</MenuItem>
+                </Menu>
               </Stack>
             ) : (
               <Button

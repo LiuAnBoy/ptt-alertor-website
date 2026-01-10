@@ -174,7 +174,7 @@ const Navbar = () => {
             </Button>
 
             {isAuthenticated ? (
-              <Stack direction="row" alignItems="center">
+              <Stack direction="row" alignItems="center" spacing={3}>
                 <Button
                   component={NextLink}
                   href="/subscriptions"
